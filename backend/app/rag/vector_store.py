@@ -11,6 +11,6 @@ def store_chunks(session, chunks):
     session.commit()
 
 
-def search_similar(session, embedding_vector):
+def search_similar(session, embedding_vector, k=10):
     stmt = select(Chunk).order_by(Chunk.embedding.distance(embedding_vector))
-    return session.exec(stmt.limit(10)).all()
+    return session.exec(stmt.limit(k)).all()

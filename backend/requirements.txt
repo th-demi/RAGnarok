@@ -5,7 +5,7 @@ pydantic-settings
 sqlmodel
 psycopg2-binary
 python-jose
-passlib[bcrypt]
+argon2-cffi
 python-multipart
 celery[redis]
 redis

@@ -12,5 +12,5 @@ class User(SQLModel, table=True):
 class Chunk(SQLModel, table=True):
     id: int = Field(primary_key=True)
     text: str
-    embedding: list[float] = Field(sa_column=Column(Vector(1536)), exclude=True)
+    embedding: list[float] = Field(sa_column=Column(Vector(3072)), exclude=True)
     source: str

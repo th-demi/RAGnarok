@@ -5,7 +5,7 @@ from app.db.models import User
 from app.auth.schemas import UserCreate, Token
 from app.auth.jwt import create_access_token
 from sqlmodel import select
-from passlib.hash import bcrypt
+from app.auth.hash import hash_password, verify_password
 
 router = APIRouter(prefix="/auth")
 
@@ -16,7 +16,7 @@ def register(user: UserCreate, session=Depends(get_session)):
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    hashed = bcrypt.hash(user.password)
+    hashed = hash_password(user.password)
     db_user = User(email=user.email, hashed_password=hashed)
     session.add(db_user)
     session.commit()
@@ -30,7 +30,7 @@ def login(
     session=Depends(get_session),
 ):
     user = session.exec(select(User).where(User.email == form_data.username)).first()
-    if not user or not bcrypt.verify(form_data.password, user.hashed_password):
+    if not user or not verify_password(user.hashed_password, form_data.password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     token = create_access_token(user.email)
