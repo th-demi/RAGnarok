@@ -6,11 +6,6 @@ class UserCreate(BaseModel):
     password: str
 
 
-class UserRead(BaseModel):
-    email: EmailStr
-    is_verified: bool
-
-
 class Token(BaseModel):
     access_token: str
     token_type: str

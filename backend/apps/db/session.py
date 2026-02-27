@@ -1,6 +1,6 @@
 from sqlmodel import create_engine, Session
 
-from app.config import settings
+from apps.config import settings
 
 DATABASE_URL = (
     f"postgresql://{settings.POSTGRES_USER}:"

@@ -1,5 +1,5 @@
 import httpx
-from app.config import settings
+from apps.config import settings
 
 async def query_llm(context: str, question: str) -> str:
     """

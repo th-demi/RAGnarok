@@ -1,4 +1,4 @@
-from app.rag.embeddings import create_embeddings
+from apps.rag.embeddings import create_embeddings
 import pdfplumber
 
 async def extract_text(file):
@@ -24,7 +24,7 @@ async def process_file(file):
     print(f'Text extraction started========')
     text = await extract_text(file)
     print(f'extracted text : {text}')
-    chunks = chunk_text(text)  # your existing chunking method
+    chunks = chunk_text(text)
     print(f'chunks : {chunks}')
     embs = await create_embeddings([c["text"] for c in chunks])
     print(f'embds : {embs}')

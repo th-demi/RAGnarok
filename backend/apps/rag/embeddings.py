@@ -1,5 +1,5 @@
 import httpx
-from app.config import settings
+from apps.config import settings
 
 async def create_embeddings(texts: list[str]):
     async with httpx.AsyncClient() as client:

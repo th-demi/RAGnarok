@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.auth.routes import router as auth_router
-from app.rag.routes import router as rag_router
+from apps.auth.routes import router as auth_router
+from apps.rag.routes import router as rag_router
 
 from sqlmodel import SQLModel
-from app.db.session import engine
+from apps.db.session import engine
 
 app = FastAPI()
 

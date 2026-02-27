@@ -2,9 +2,8 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
     env_file:
-      - ./backend/app/.env
+      - ./.env
     ports:
       - "8000:8000"
     depends_on:
@@ -22,8 +21,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     command: celery -A celeryconfig.celery_app worker --loglevel=info
-    env_file:
-      - ./backend/app/.env
+    # env_file:
+    #   - ./backend/app/.env
     depends_on:
       postgres:
         condition: service_healthy

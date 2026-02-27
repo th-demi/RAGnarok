@@ -1,11 +1,11 @@
 from fastapi import APIRouter, UploadFile, Depends
-from app.db.session import get_session
-from app.rag.schemas import AskRequest
-from app.rag.processor import process_file
-from app.rag.vector_store import store_chunks, search_similar
-from app.auth.jwt import get_current_user
-from app.rag.embeddings import create_embeddings
-from app.rag.llm import query_llm
+from apps.db.session import get_session
+from apps.rag.schemas import AskRequest
+from apps.rag.processor import process_file
+from apps.rag.vector_store import store_chunks, search_similar
+from apps.auth.jwt import get_current_user
+from apps.rag.embeddings import create_embeddings
+from apps.rag.llm import query_llm
 
 router = APIRouter(prefix="/rag")
 
