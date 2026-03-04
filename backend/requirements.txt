@@ -7,9 +7,9 @@ psycopg2-binary
 python-jose
 argon2-cffi
 python-multipart
-celery[redis]
 redis
 httpx
 pdfplumber
 pgvector
 email-validator
+fastapi-advanced-rate-limiter

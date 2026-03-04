@@ -9,8 +9,13 @@ class User(SQLModel, table=True):
     hashed_password: str
 
 
+class Document(SQLModel, table=True):
+    id: int = Field(primary_key=True)
+    filename: str
+    user_id: int = Field(foreign_key="user.id", index=True)
+
 class Chunk(SQLModel, table=True):
     id: int = Field(primary_key=True)
     text: str
-    embedding: list[float] = Field(sa_column=Column(Vector(3072)), exclude=True)
-    source: str
+    embedding: list[float] = Field(sa_column=Column(Vector(3072)))
+    document_id: int = Field(foreign_key="document.id", index=True)

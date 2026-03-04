@@ -16,21 +16,6 @@ services:
     networks:
       - ragnet
 
-  celery_worker:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    command: celery -A celeryconfig.celery_app worker --loglevel=info
-    # env_file:
-    #   - ./backend/app/.env
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_started
-    networks:
-      - ragnet
-
   # frontend:
   #   build:
   #     context: ./frontend

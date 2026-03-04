@@ -9,7 +9,7 @@ async def query_llm(context: str, question: str) -> str:
 
     async with httpx.AsyncClient(timeout=30) as client:
         response = await client.post(
-            "https://openrouter.ai/v1/chat/completions",
+            "https://openrouter.ai/api/v1/chat/completions",
             headers={
                 "Authorization": f"Bearer {settings.OPENROUTER_API_KEY}",
                 "Content-Type": "application/json",
@@ -24,7 +24,9 @@ async def query_llm(context: str, question: str) -> str:
                 "temperature": 0.2,
             },
         )
-
+        # print("STATUS:", response.status_code)
+        # print("HEADERS:", response.headers)
+        # print("TEXT:", response.text)
         response.raise_for_status()
         data = response.json()
 

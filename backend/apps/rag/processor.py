@@ -1,5 +1,6 @@
-from apps.rag.embeddings import create_embeddings
+from apps.rag.cached_embeddings import get_cached_embedding
 import pdfplumber
+import re
 
 async def extract_text(file):
     with pdfplumber.open(file.file) as pdf:
@@ -10,23 +11,46 @@ async def extract_text(file):
                 text += page_text + "\n"
     return text
 
-def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 200):
-    tokens = text.split()
+
+def split_sentences(text):
+    # split on punctuation followed by space
+    return re.split(r'(?<=[.!?]) +', text)
+
+def recursive_chunk(text, max_tokens=600, overlap=80):
+    paragraphs = text.split("\n\n")
     chunks = []
-    start = 0
-    while start < len(tokens):
-        chunk = tokens[start:start + chunk_size]
-        chunks.append({"text": " ".join(chunk)})
-        start += chunk_size - overlap
+    for para in paragraphs:
+        if len(para.split()) <= max_tokens:
+            chunks.append(para)
+        else:
+            lines = para.split("\n")
+            for line in lines:
+                if len(line.split()) <= max_tokens:
+                    chunks.append(line)
+                else:
+                    # now sentence chunk
+                    sentences = split_sentences(line)
+                    cur = []
+                    for s in sentences:
+                        cur += [s]
+                        if len(" ".join(cur).split()) >= max_tokens:
+                            chunks.append(" ".join(cur))
+                            # overlap
+                            cur = cur[-overlap:]
+                    if cur:
+                        chunks.append(" ".join(cur))
     return chunks
 
 async def process_file(file):
     print(f'Text extraction started========')
     text = await extract_text(file)
     print(f'extracted text : {text}')
-    chunks = chunk_text(text)
+    chunks = recursive_chunk(text)
     print(f'chunks : {chunks}')
-    embs = await create_embeddings([c["text"] for c in chunks])
+    embs = []
+    for c in chunks:
+        emb = await get_cached_embedding(c["text"])
+        embs.append(emb)
     print(f'embds : {embs}')
     return [
         {"text": chunks[i]["text"], "embedding": embs[i], "source": file.filename}
