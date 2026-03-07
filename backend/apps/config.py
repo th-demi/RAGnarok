@@ -1,7 +1,4 @@
 from pydantic_settings import BaseSettings
-from dotenv import load_dotenv
-
-load_dotenv()
 
 class Settings(BaseSettings):
     SECRET_KEY: str
@@ -13,6 +10,7 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     POSTGRES_HOST: str
     POSTGRES_PORT: int
+    DB_ECHO: bool = False
 
 
     FRONTEND_BASE_URL: str

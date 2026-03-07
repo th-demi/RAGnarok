@@ -1,4 +1,4 @@
-from apps.rag.embeddings import create_embeddings
+from apps.services.embedding_service import create_embeddings
 import pdfplumber
 import re
 
@@ -30,8 +30,6 @@ async def process_file(file):
     chunks = chunk_text(text)
     if not chunks:
         return []
-
-    results = []
 
     embeddings = await create_embeddings(chunks)
 

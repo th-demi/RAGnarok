@@ -4,7 +4,6 @@ from fastapi_advanced_rate_limiter import SlidingWindowRateLimiter
 from apps.db.redis_client import redis_client
 from apps.auth.jwt import decode_token
 
-# 20 requests per minute per user
 limiter = SlidingWindowRateLimiter(
     capacity=20,
     fill_rate=20/60,
@@ -19,11 +18,9 @@ async def rate_limit_middleware(request: Request, call_next):
     if token:
         sub = decode_token(token)
         if sub:
-            # key by user email (unique)
             user_id = sub
 
     if not user_id:
-        # fallback to IP for unauth endpoints
         user_id = request.client.host
 
     if not limiter.allow_request(user_id):

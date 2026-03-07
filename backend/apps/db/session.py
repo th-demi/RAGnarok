@@ -9,7 +9,7 @@ DATABASE_URL = (
     f"{settings.POSTGRES_DB}"
 )
 
-engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(DATABASE_URL, echo=settings.DB_ECHO, pool_size=10, max_overflow=20, pool_pre_ping=True)
 
 
 def get_session():

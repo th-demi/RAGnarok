@@ -12,7 +12,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
 def create_access_token(subject: str) -> str:
-    """Create a JWT for the given subject (typically email)."""
     expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode = {"sub": subject, "exp": expire}
     token = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
@@ -20,7 +19,6 @@ def create_access_token(subject: str) -> str:
 
 
 def decode_token(token: str):
-    """Decode a JWT and return the subject (email) if valid."""
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         return payload.get("sub")

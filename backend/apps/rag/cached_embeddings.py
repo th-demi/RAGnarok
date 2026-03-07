@@ -1,6 +1,6 @@
 import hashlib
 import json
-from apps.rag.embeddings import create_embeddings
+from apps.services.embedding_service import create_embeddings
 from apps.db.redis_client import redis_client
 
 
@@ -16,10 +16,8 @@ async def get_cached_embedding(text: str):
     if cached:
         return json.loads(cached)
 
-    # Not cached → call API
     embedding = (await create_embeddings([text]))[0]
 
-    # Store in Redis (no expiry or set TTL if desired)
-    redis_client.set(key, json.dumps(embedding))
+    redis_client.set(key, json.dumps(embedding), ex=86400)
 
     return embedding
