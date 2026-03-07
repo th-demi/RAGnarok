@@ -7,6 +7,7 @@ from apps.auth.jwt import get_current_user
 from apps.rag.cached_embeddings import get_cached_embedding
 from apps.rag.llm import query_llm
 from apps.db.models import Document, Chunk
+from sqlmodel import select
 
 router = APIRouter(prefix="/rag")
 
@@ -17,17 +18,20 @@ def list_docs(session=Depends(get_session), user=Depends(get_current_user)):
 
 @router.post("/upload")
 async def upload_file(file: UploadFile, session=Depends(get_session), user=Depends(get_current_user)):
-    if file.spool_max_size and file.spool_max_size > 10_000_000:
-        raise HTTPException(400, "File too large. Max = 10MB")
+    contents = await file.read()
+
+    if len(contents) > 10_000_000:
+        raise HTTPException(status_code=400, detail="File too large. Max = 10MB")
+
+    file.file.seek(0)
+
     doc = Document(filename=file.filename, user_id=user.id)
     session.add(doc)
     session.commit()
     session.refresh(doc)
-    # print(f'File processing started =============')
     chunks_data = await process_file(file)
     if not chunks_data:
         return {"status": "no_text_found"}
-    # print(f'Returned chunked data : {chunks_data}')
     for ch in chunks_data:
         chunk = Chunk(text=ch["text"], embedding=ch["embedding"], document_id=doc.id)
         session.add(chunk)
@@ -38,14 +42,13 @@ async def upload_file(file: UploadFile, session=Depends(get_session), user=Depen
 @router.post("/ask")
 async def ask_question(req: AskRequest, doc_id: int=None, session=Depends(get_session), user=Depends(get_current_user)):
     q_emb = await get_cached_embedding(req.question)
-    # print(f'q_emb ======================== :, {q_emb}')
     results = search_similar(session, q_emb, user.id, doc_id)
-    # print(f'results ======================== : {results}')
-    context = "\n".join([r.text for r in results])
-    # print(f'context ======================== : {context}')
+    context = "\n".join([r[0].text for r in results])
     answer = await query_llm(context, req.question)
-    # print(f'answer ======================== : {answer}')
     return {
         "answer": answer,
-        "sources": [{"text": r.text, "source": r.source} for r in results]
+        "sources": [
+            {"text": r[0].text, "source": r[1]}
+            for r in results
+        ]
     }

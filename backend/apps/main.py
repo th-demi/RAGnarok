@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from apps.middleware.rate_limiter import rate_limit_middleware
-
+from apps.config import settings
 from apps.auth.routes import router as auth_router
 from apps.rag.routes import router as rag_router
 
