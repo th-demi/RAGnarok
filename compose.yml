@@ -16,16 +16,18 @@ services:
     networks:
       - ragnet
 
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - NEXT_PUBLIC_API_BASE=http://localhost:8000
-  #   networks:
-  #     - ragnet
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_BASE=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - ragnet
 
   postgres:
     image: pgvector/pgvector:pg17
