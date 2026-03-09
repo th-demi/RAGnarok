@@ -7,8 +7,6 @@ export function useAuth() {
   const router = useRouter();
 
   useEffect(() => {
-    // Check if token exists, if not redirect to login (unless already there)
-    // This is a basic client-side check. Middleware is better for robust protection but this fits the "minimal" scope.
     const token = localStorage.getItem('token');
     const path = window.location.pathname;
     if (!token && path !== '/login' && path !== '/register') {
@@ -20,7 +18,7 @@ export function useAuth() {
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append('username', email); // OAuth2PasswordRequestForm expects 'username'
+      formData.append('username', email);
       formData.append('password', password);
       
       const response = await api.post<AuthResponse>('/auth/login', formData, {
@@ -41,8 +39,6 @@ export function useAuth() {
     setLoading(true);
     try {
       await api.post('/auth/register', { email, password });
-      // After register, usually we want them to login or auto-login. 
-      // The prompt implies separate pages. Let's redirect to login.
       router.push('/login');
     } catch (error) {
       console.error('Registration failed', error);

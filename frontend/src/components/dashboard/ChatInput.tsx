@@ -3,9 +3,9 @@
 import { useRef, useState } from 'react';
 import { Plus, Send, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { DocumentAttachmentBar } from './DocumentAttachmentBar';
 import { Document, api } from '@/lib/api';
+import { motion } from 'framer-motion';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -39,17 +39,19 @@ export function ChatInput({
     setInput('');
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e as any);
+    }
+  };
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     if (file.type !== 'application/pdf') {
       alert('Only PDF files are allowed.');
-      return;
-    }
-
-    if (file.size > 10 * 1024 * 1024) {
-      alert('File size must be less than 10MB.');
       return;
     }
 
@@ -64,7 +66,6 @@ export function ChatInput({
       onUploadSuccess();
     } catch (err) {
       console.error('Upload failed', err);
-      alert('Failed to upload document.');
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -72,16 +73,25 @@ export function ChatInput({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4">
-      <DocumentAttachmentBar
-        documents={documents}
-        selectedDocIds={selectedDocIds}
-        deletingIds={deletingIds}
-        onToggle={onToggleDoc}
-        onDelete={onDeleteDoc}
-      />
+    <motion.div 
+      initial={{ y: 20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      className="w-full max-w-4xl mx-auto"
+    >
+      <div className="mb-4">
+        <DocumentAttachmentBar
+          documents={documents}
+          selectedDocIds={selectedDocIds}
+          deletingIds={deletingIds}
+          onToggle={onToggleDoc}
+          onDelete={onDeleteDoc}
+        />
+      </div>
       
-      <form onSubmit={handleSubmit} className="relative flex items-end gap-2 bg-secondary/30 border border-border rounded-xl p-2 focus-within:ring-1 focus-within:ring-ring transition-all">
+      <form 
+        onSubmit={handleSubmit} 
+        className="relative flex items-end gap-3 glass bg-white/[0.03] border border-white/10 rounded-3xl p-3 shadow-2xl focus-within:border-primary/40 focus-within:bg-white/[0.05] transition-all duration-300"
+      >
         <input
           type="file"
           accept=".pdf"
@@ -92,45 +102,47 @@ export function ChatInput({
         
         <Button
           type="button"
-          variant="ghost"
+          variant="secondary"
           size="icon"
-          className="h-10 w-10 shrink-0 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary"
+          className="h-12 w-12 shrink-0 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all"
           onClick={() => fileInputRef.current?.click()}
           disabled={isUploading || isLoading}
         >
           {isUploading ? (
             <Loader2 className="h-5 w-5 animate-spin" />
           ) : (
-            <Plus className="h-5 w-5" />
+            <Plus className="h-6 w-6" />
           )}
           <span className="sr-only">Upload PDF</span>
         </Button>
 
-        <Input
+        <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask a question about your documents..."
-          className="flex-1 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 min-h-[40px] py-2 h-auto"
+          onKeyDown={handleKeyDown}
+          placeholder="Ask a question..."
+          className="flex-1 bg-transparent border-none focus:outline-none focus:ring-0 resize-none min-h-[48px] py-3.5 h-12 max-h-48 text-[15px] text-foreground placeholder:text-muted-foreground/60 scrollbar-none font-medium"
           disabled={isLoading}
+          rows={1}
         />
 
         <Button 
           type="submit" 
           size="icon" 
-          className="h-10 w-10 shrink-0 rounded-lg"
+          className="h-12 w-12 shrink-0 rounded-2xl shadow-lg bg-primary hover:scale-105 transition-transform"
           disabled={isLoading || !input.trim() || isUploading}
         >
           {isLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="h-5 w-5 animate-spin" />
           ) : (
-            <Send className="h-4 w-4" />
+            <Send className="h-5 w-5" />
           )}
           <span className="sr-only">Send</span>
         </Button>
       </form>
-      <p className="text-[10px] text-center text-muted-foreground mt-2">
-        Tip: Select document chips to focus the AI on specific files.
+      <p className="text-[11px] font-medium tracking-wide text-center text-muted-foreground/50 mt-4 uppercase">
+        Refined Intelligence • Secure Document RAG
       </p>
-    </div>
+    </motion.div>
   );
 }

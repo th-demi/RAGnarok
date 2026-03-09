@@ -24,37 +24,97 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --radius-lg: 0.75rem;
-  --radius-md: 0.5rem;
-  --radius-sm: 0.25rem;
+  --radius-lg: 1rem;
+  --radius-md: 0.75rem;
+  --radius-sm: 0.5rem;
 }
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  /* Ultra-modern deep charcoal/black palette */
+  --background: #050505;
+  --foreground: #fcfcfc;
   
-  --card: #171717;
-  --card-foreground: #ededed;
+  --card: #0c0c0c;
+  --card-foreground: #fcfcfc;
  
-  --popover: #0a0a0a;
-  --popover-foreground: #ededed;
+  --popover: #050505;
+  --popover-foreground: #fcfcfc;
  
-  --primary: #ededed;
-  --primary-foreground: #171717;
+  /* Elegant off-white/silver primary */
+  --primary: #fcfcfc;
+  --primary-foreground: #050505;
  
-  --secondary: #262626;
-  --secondary-foreground: #ededed;
+  --secondary: #141414;
+  --secondary-foreground: #fcfcfc;
  
-  --muted: #262626;
-  --muted-foreground: #a3a3a3;
+  --muted: #141414;
+  --muted-foreground: #737373;
  
-  --accent: #262626;
-  --accent-foreground: #ededed;
+  /* Subtle blue/silver accent for intelligence feel */
+  --accent: #1a1a1a;
+  --accent-foreground: #fcfcfc;
  
-  --destructive: #7f1d1d;
-  --destructive-foreground: #ededed;
+  --destructive: #ef4444;
+  --destructive-foreground: #fcfcfc;
 
-  --border: #262626;
-  --input: #262626;
-  --ring: #a3a3a3;
+  --border: #1a1a1a;
+  --input: #1a1a1a;
+  --ring: #404040;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    outline-color: var(--ring);
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Custom scrollbar for premium look */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #404040;
+}
+
+/* Smooth selection colors */
+::selection {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+/* Glassmorphism helpers */
+.glass {
+  background: rgba(12, 12, 12, 0.7);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #fff 0%, #a3a3a3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

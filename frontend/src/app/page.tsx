@@ -32,9 +32,9 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
       <Header />
-      <main className="flex-1 flex flex-col h-[calc(100vh-64px)] overflow-hidden">
+      <main className="flex-1 flex flex-col min-h-0 relative">
         <ChatInterface 
           documents={documents} 
           onUploadSuccess={fetchDocuments}

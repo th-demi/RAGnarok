@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2 } from 'lucide-react';
+import { Loader2, LayoutDashboard, UserPlus } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -26,53 +27,95 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Create Account</CardTitle>
-          <CardDescription>
-            Enter your email below to create your account.
-          </CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            {error && <p className="text-sm text-red-500">{error}</p>}
-          </CardContent>
-          <CardFooter className="flex flex-col gap-4">
-            <Button className="w-full" type="submit" disabled={loading}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Create account
-            </Button>
-            <div className="text-center text-sm">
-              Already have an account?{' '}
-              <Link href="/login" className="underline">
-                Sign in
-              </Link>
-            </div>
-          </CardFooter>
-        </form>
-      </Card>
+    <div className="relative flex min-h-screen flex-col items-center justify-center p-6 bg-background overflow-hidden">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full" />
+      </div>
+
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-[400px] z-10"
+      >
+        <div className="flex flex-col items-center mb-10">
+          <motion.div 
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            className="p-3 rounded-2xl bg-primary/10 border border-primary/20 mb-4"
+          >
+            <LayoutDashboard className="h-8 w-8 text-primary" />
+          </motion.div>
+          <h1 className="text-3xl font-bold tracking-tight text-gradient">Ragnarok</h1>
+          <p className="text-muted-foreground font-medium mt-2">Join the next generation of RAG.</p>
+        </div>
+
+        <Card className="glass border-white/5 shadow-2xl overflow-hidden">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-xl">Create Account</CardTitle>
+            <CardDescription className="text-muted-foreground/70">
+              Start your journey with refined document intelligence.
+            </CardDescription>
+          </CardHeader>
+          <form onSubmit={handleSubmit}>
+            <CardContent className="grid gap-5">
+              <div className="grid gap-2">
+                <Label htmlFor="email" className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80 ml-1">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="name@company.com"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="bg-white/[0.03] border-white/10 h-11 focus:bg-white/[0.05] transition-all"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="password" className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80 ml-1">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="bg-white/[0.03] border-white/10 h-11 focus:bg-white/[0.05] transition-all"
+                />
+              </div>
+              {error && (
+                <motion.p 
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="text-xs font-medium text-destructive bg-destructive/10 p-3 rounded-lg border border-destructive/20"
+                >
+                  {error}
+                </motion.p>
+              )}
+            </CardContent>
+            <CardFooter className="flex flex-col gap-6 pt-2">
+              <Button className="w-full h-11 rounded-xl bg-primary text-primary-foreground font-bold group" type="submit" disabled={loading}>
+                {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : (
+                  <span className="flex items-center gap-2">
+                    Create Account <UserPlus className="h-4 w-4" />
+                  </span>
+                )}
+              </Button>
+              <div className="text-center text-sm font-medium text-muted-foreground">
+                Already have an account?{' '}
+                <Link href="/login" className="text-primary hover:underline transition-all">
+                  Sign in
+                </Link>
+              </div>
+            </CardFooter>
+          </form>
+        </Card>
+      </motion.div>
+      
+      <div className="absolute bottom-8 text-[10px] font-bold tracking-[0.2em] text-muted-foreground/30 uppercase">
+        Enterprise Grade RAG System
+      </div>
     </div>
   );
 }
