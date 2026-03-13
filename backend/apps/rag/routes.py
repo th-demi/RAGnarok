@@ -85,7 +85,7 @@ async def ask_question(req: AskRequest, session=Depends(get_session), user=Depen
     return {
         "answer": answer,
         "sources": [
-            {"text": r[0].text, "source": r[1]}
+            {"text": r[0].text, "filename": r[1]}
             for r in results
         ]
     }

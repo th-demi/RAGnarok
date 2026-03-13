@@ -25,9 +25,9 @@ async def rate_limit_middleware(request: Request, call_next):
 
     if not limiter.allow_request(user_id):
         wait = limiter.get_wait_time(user_id)
-        raise HTTPException(
+        return JSONResponse(
             status_code=429,
-            detail=f"Rate limit exceeded. Try again in {int(wait)}s."
+            content={"detail": f"Rate limit exceeded. Try again in {int(wait)}s."}
         )
 
     return await call_next(request)
