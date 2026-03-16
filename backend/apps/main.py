@@ -12,13 +12,6 @@ from apps.db.session import engine
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     SQLModel.metadata.create_all(engine)
-    with Session(engine) as session:
-        session.exec(text("CREATE EXTENSION IF NOT EXISTS vector"))
-        session.exec(text("""
-            CREATE INDEX IF NOT EXISTS chunk_embedding_idx
-            ON chunk USING hnsw (embedding vector_l2_ops)
-        """))
-        session.commit()
     yield
 
 

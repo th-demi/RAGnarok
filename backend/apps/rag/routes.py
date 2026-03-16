@@ -70,22 +70,28 @@ async def upload_file(file: UploadFile, session=Depends(get_session), user=Depen
 @router.post("/ask")
 async def ask_question(req: AskRequest, session=Depends(get_session), user=Depends(get_current_user)):
     q_emb = await get_cached_embedding(req.question)
-    results = search_similar(session, q_emb, user.id, req.doc_id)
+
+    doc_ids = None
+    if req.doc_ids:
+        doc_ids = req.doc_ids
+    elif req.doc_id is not None:
+        doc_ids = [req.doc_id]
+
+    results = search_similar(session, q_emb, user.id, doc_ids=doc_ids)
+
     seen = set()
     filtered = []
-
     for chunk, filename in results:
         if chunk.text not in seen:
             filtered.append((chunk, filename))
             seen.add(chunk.text)
 
-    results = filtered
-    context = "\n\n".join([r[0].text for r in results[:5]])
+    context = "\n\n".join([r[0].text for r in filtered[:5]])
     answer = await query_llm(context, req.question)
     return {
         "answer": answer,
         "sources": [
             {"text": r[0].text, "filename": r[1]}
-            for r in results
+            for r in filtered
         ]
     }

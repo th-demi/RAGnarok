@@ -61,24 +61,17 @@ export function ChatInterface({ documents, onUploadSuccess, onDeleteSuccess }: C
     setLoading(true);
 
     try {
-      const payload: any = { question: userMessage };
+      const payload: { question: string; doc_ids?: number[] } = { question: userMessage };
       if (selectedDocIds.length > 0) {
-        payload.document_ids = selectedDocIds;
-        payload.doc_id = selectedDocIds[0];
+        payload.doc_ids = selectedDocIds;
       }
 
       const response = await api.post<AskResponse>('/rag/ask', payload);
-      
       setMessages((prev) => [
         ...prev,
-        { 
-          role: 'assistant', 
-          content: response.data.answer, 
-          sources: response.data.sources 
-        }
+        { role: 'assistant', content: response.data.answer, sources: response.data.sources }
       ]);
     } catch (error) {
-      console.error('Chat error', error);
       setMessages((prev) => [
         ...prev,
         { role: 'assistant', content: 'Sorry, I encountered an error while processing your request.' }

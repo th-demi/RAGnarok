@@ -51,10 +51,8 @@ export interface Document {
 export interface AskResponse {
   answer: string;
   sources: Array<{
-    document_id: number;
     filename: string;
     text: string;
-    score: number;
   }>;
 }
 

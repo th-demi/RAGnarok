@@ -8,7 +8,7 @@ import { ChatInterface } from '@/components/dashboard/ChatInterface';
 import { Loader2 } from 'lucide-react';
 
 export default function Dashboard() {
-  const { loading: authLoading } = useAuth();
+  const { authLoading } = useAuth();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loadingDocs, setLoadingDocs] = useState(true);
 
